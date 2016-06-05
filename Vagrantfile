@@ -5,6 +5,12 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # Add private key path
+  # config.ssh.username=“vagrant”
+  # config.ssh.password=“vagrant”
+  # config.ssh.private_key_path=
+  "/Users/rashmipoudel/Desktop/Git/shinyVM/.vagrant/machines/default/virtualbox/      private_key"
+
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
