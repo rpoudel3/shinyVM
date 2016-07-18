@@ -1,19 +1,13 @@
-#Data set used:
-
 library(shiny)
-library(plyr)
-
-data <- read.table("/Users/rashmipoudel/Desktop/breast-cancer-wisconsin.csv",header=TRUE,sep=',')
-head(data)
 
 palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
           "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
 
-shinyServer(function(input, output, session) {
-  
-  # Combine the selected variables into a new data frame
+# Define server logic required to draw a histogram
+shinyServer(function(input, output,session) {
+
   selectedData <- reactive({
-    data[, c(input$xcol, input$ycol)]
+    cancer_data1[, c(input$xcol, input$ycol)]
   })
   
   clusters <- reactive({
@@ -27,5 +21,14 @@ shinyServer(function(input, output, session) {
          pch = 20, cex = 3)
     points(clusters()$centers, pch = 4, cex = 4, lwd = 4)
   })
+  output$distPlot <- renderPlot({
+    x    <- cancer_data1[, 2]  # Old Faithful Geyser data
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  })
+  
+  
   
 })

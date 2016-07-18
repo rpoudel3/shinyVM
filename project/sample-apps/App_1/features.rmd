@@ -42,10 +42,7 @@ A short description of the features and response of the dataset are provided in 
 33.LD-largely decelerative pattern					
 34.FS-flat-sinusoidal pattern (pathological state)					
 35.SUSP-suspect pattern	
-
 36.CLASS- Class code( 1 t 10) for classes A to SUSP
-
-37.Status of fetal heart disease
-
+36.Status of fetal heart disease
 NSP	Normal=1; Suspect=2; Pathologic=3					
 
