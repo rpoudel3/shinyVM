@@ -1,0 +1,51 @@
+---
+title: "Feature Description"
+author: "Rashmi Poudel"
+date: "June 12, 2016"
+output: html_document
+---
+
+A short description of the features and response of the dataset are provided in the list below.
+
+1.(b)-start instant					
+2.(e)-end instant					
+3.LBE-baseline value (medical expert)					
+4.LB-baseline value (SisPorto)					
+5.AC-accelerations (SisPorto)					
+6.FM-foetal movement (SisPorto)					
+7.UC-uterine contractions (SisPorto)					
+8.ASTV-percentage of time with abnormal short term variability  (SisPorto)					
+9.mSTV-mean value of short term variability  (SisPorto)					
+10.ALTV-percentage of time with abnormal long term variability  (SisPorto)					
+11.mLTV-mean value of long term variability  (SisPorto)					
+12.DL-light decelerations					
+13.DS-severe decelerations					
+14.DP-prolongued decelerations					
+15.DR-repetitive decelerations					
+16.Width-	histogram width					
+17.Min-low freq. of the histogram					
+18.Max-high freq. of the histogram					
+19.Nmax-number of histogram peaks					
+20.Nzeros-number of histogram zeros					
+21.Mode-histogram mode					
+22.Mean-histogram mean					
+23.Median-histogram median					
+24.Variance-histogram variance					
+25.Tendency-histogram tendency: -1=left assymetric; 0=symmetric; 1=right assymetric					
+26.A-calm sleep					
+27.B-REM sleep					
+28.C-calm vigilance					
+29.D-active vigilance	
+30.SH-shift pattern (A or Susp with shifts)					
+31.AD-accelerative/decelerative pattern (stress situation)					
+32.DE-decelerative pattern (vagal stimulation)					
+33.LD-largely decelerative pattern					
+34.FS-flat-sinusoidal pattern (pathological state)					
+35.SUSP-suspect pattern	
+
+36.CLASS- Class code( 1 t 10) for classes A to SUSP
+
+37.Status of fetal heart disease
+
+NSP	Normal=1; Suspect=2; Pathologic=3					
+
