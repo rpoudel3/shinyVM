@@ -1,0 +1,32 @@
+---
+title: "correlation_rmd"
+author: "rashmi"
+date: "August 7, 2016"
+output: html_document
+---
+
+Coefficient value between 0 and 0.33- Weakly correlated
+
+Coefficient value between 0.33 and 0.7- Medium correlated
+
+Coefficient value between 0.7 and 0.10- Strongly correlated
+
+#### Strongly Correlated Variables:
+ 
+1.Histogram Mode, Histogram Mean and Histogram Median measures are strongly
+correlated with Fetal Heart Rate Baseline (LB).
+
+2.Histogram Mean, Histogram Mode and Histogram Median are strongly correlated
+with each other.
+
+3.Minimum of FHR histogram (MIN), Maximum of FHR histogram (MAX) and Number of histogram peaks (NMAX) are strongly correlated with Width of FHR histogram.
+
+4.Number of histogram peaks (NMAX) is strongly correlated with Minimum of FHR histogram (MIN).
+
+
+#### Target variable
+1.Fetal State (NSP) is moderately correlated with Accelerations (AC), prolonged
+decelerations (DP), abnormal short term variability (ASTV) and abnormal long
+term variability (ALTV).
+
+2.Target variable shows no correlation with any histogram variables.

@@ -23,8 +23,7 @@ shinyUI(navbarPage("",theme = shinytheme("united"),
                    
                    tabPanel("Correlation",
                             sidebarPanel(
-                              helpText("Fetal State(NSP) is moderately correlated with Acceleration(AC), prolonged deceleration(DP),
-                                       abnormal short term variability(ASTV) amd abnormal long term variability (ALTV)")
+                              includeMarkdown("correlation.rmd")
                             ),
                             mainPanel(
                             
@@ -75,7 +74,8 @@ shinyUI(navbarPage("",theme = shinytheme("united"),
                    
                    tabPanel("Classification",
                               headerPanel("Fetal Heart Classification"),
-                              
+                              tabsetPanel(
+                              tabPanel('Randomforest',
                               sidebarPanel(
                                 
                                 numericInput("obs", "Number of observations to view:", 5), 
@@ -85,20 +85,21 @@ shinyUI(navbarPage("",theme = shinytheme("united"),
                                             min = 0, max = 1, value = 0.7, step = 0.1),
                                 
                                 selectInput("algorithm", "Choose a Classification algorithm:", 
-                                            choices = c("PCA", "randomForest"))
-                                
+                                            choices = c("randomForest"))
                               ),
+                              
+                                mainPanel(
+                                  h2("Results"),
+                                  verbatimTextOutput("results")
+                                  
+                                )
+                              ),
+                              tabPanel("Logistic Regression",
+                                      verbatimTextOutput("results_regression")
+                              )
                               
                               # Show the some example of observations, a summary of the dataset 
                               # and the results on the model
-                              mainPanel(
-                                
-                                p("This App shows the application of 3 different classification algorithms (rpart, randomForest and lda) to the iris dataset."),
-            
-                                p("Lastly it trains a classification algorithm chosen by the user on the sidepar panel, splitting the iris dataset
-                                  in training and testing sets based on the chosen proportion chosen on the sidebar (by defuault 70% training 30% testing)."),
-                                h2("Results"),
-                                verbatimTextOutput("results")
-                              )
-                   )
+                              
+                   ))
 ))

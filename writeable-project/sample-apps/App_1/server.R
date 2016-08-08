@@ -1,5 +1,6 @@
 library(shiny)
-
+library(nnet)
+library(psych)
 palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
           "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
 
@@ -74,6 +75,35 @@ shinyServer(function(input, output,session) {
   })
   algorithmInput <- reactive(input$algorithm)
   
+  output$results_regression<-renderPrint({
+    logisticPseudoR2s <- function(LogModel) {
+      dev <- LogModel$deviance 
+      nullDev <- LogModel$null.deviance 
+      modelN <-  length(LogModel$fitted.values)
+      R.l <-  1 -  dev / nullDev
+      R.cs <- 1- exp ( -(nullDev - dev) / modelN)
+      R.n <- R.cs / ( 1 - ( exp (-(nullDev / modelN))))
+      cat("Pseudo R^2 for logistic regression\n")
+      cat("Hosmer and Lemeshow R^2  ", round(R.l, 3), "\n")
+      cat("Cox and Snell R^2        ", round(R.cs, 3), "\n")
+      cat("Nagelkerke R^2           ", round(R.n, 3),    "\n")
+    }
+    
+    d2_attrib<-fetal_data[,1:22]
+    
+    fa4_all_vm <- principal(d2_attrib, nfactors =4, rotate = "varimax")
+    fa4_all_vm  
+    
+    # Can predict with the PCs, sometimes get a better result or 
+    # understanding of the data
+    #NB: component scores are standard scores (mean=0, sd = 1) of the standardized input
+    rotation4 <- data.frame(fa4_all_vm$score, class=fetal_data[,"NSP"])
+    logisticMod <- multinom(class ~  PC1 + PC2 + PC3 + PC4, data = rotation4)
+    summary(logisticMod) 
+    
+  })
+  
+  
   output$results <- renderPrint({
     
     
@@ -83,24 +113,54 @@ shinyServer(function(input, output,session) {
     testing = fetal_data[-trainIndex,]
     
     # apply selected classification algorithm
-    if(algorithmInput()=="PCA") {
+    if(algorithmInput()=="Logistic Regression") {
       
       # print classification parameters
-      print("Algorithm selected: rpart")
-      print(paste("Training set: ", input$slidertrainsplit*100, "%", sep = ""))
-      print(paste("Testing set: ", (1-input$slidertrainsplit)*100, "%", sep = ""))
+      #print("Algorithm selected: rpart")
+      #print(paste("Training set: ", input$slidertrainsplit*100, "%", sep = ""))
+      #print(paste("Testing set: ", (1-input$slidertrainsplit)*100, "%", sep = ""))
       
-      # build rpart model
-      library(rpart)
-      set.seed(62433)
-      model <- rpart(NSP ~ . , data= fetal_data)
+      logisticPseudoR2s <- function(LogModel) {
+        dev <- LogModel$deviance 
+        nullDev <- LogModel$null.deviance 
+        modelN <-  length(LogModel$fitted.values)
+        R.l <-  1 -  dev / nullDev
+        R.cs <- 1- exp ( -(nullDev - dev) / modelN)
+        R.n <- R.cs / ( 1 - ( exp (-(nullDev / modelN))))
+        cat("Pseudo R^2 for logistic regression\n")
+        cat("Hosmer and Lemeshow R^2  ", round(R.l, 3), "\n")
+        cat("Cox and Snell R^2        ", round(R.cs, 3), "\n")
+        cat("Nagelkerke R^2           ", round(R.n, 3),    "\n")
+      }
+      
+      # Here we use fewer PCs so we can see some structure in the data:
+      # Variables that are correlated share a PC
+      d2_attrib<-fetal_data[,1:22]
+      
+      fa4_all_vm <- principal(d2_attrib, nfactors =4, rotate = "varimax")
+      fa4_all_vm  #
+      
+      # Can predict with the PCs, sometimes get a better result or 
+      # understanding of the data
+      #NB: component scores are standard scores (mean=0, sd = 1) of the standardized input
+      rotation4 <- data.frame(fa4_all_vm$score, class=fetal_data[,"NSP"])
+      logisticMod <- multinom(class ~  PC1 + PC2 + PC3 + PC4, data = rotation4)
+      summary(logisticMod) #AIC: 782.51, Nagelkerke R^2 0.345 
+      #logisticPseudoR2s(logisticMod)
+      
+      #library(rpart)
+      #set.seed(62433)
+      #model <-multinom(NSP ~ . , data= fetal_data, reflevel="1")
       
       # test rpart model
-      pred <- predict(model, testing, type  = "class")
-      print(table(predicted = pred, reference = testing$NSP))
+      #pred <- predict(model, testing, type  = "class")
+      
+      #xtab<-table(predicted = pred, reference = testing$NSP)
       
       # print model
-      summary(model)
+      #summary(model)
+      
+      #confusionMatrix(xtab)
       
     } else if(algorithmInput()=="randomForest") {
       
@@ -116,12 +176,19 @@ shinyServer(function(input, output,session) {
       
       # test randomForest model
       pred <- predict(model, testing, type  = "class")
-      print(table(predicted = pred, reference = testing$NSP))
+      xtab<-table(predicted = pred, reference = testing$NSP)
       
       # print model
       summary(model)
       
-      
+      confusionMatrix(xtab)
+      #precision <- posPredValue(predicted = pred, reference = testing$NSP)
+      #precision
+      #recall <- sensitivity(predicted = pred, reference = testing$NSP)
+      #recall
+      #F1 <- (2 * precision * recall) / (precision + recall)
+      #F1
+    
     } else if(algorithmInput()=="lda") {
       
       
