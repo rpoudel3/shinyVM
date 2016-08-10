@@ -1,0 +1,13 @@
+---
+title: "Data Backgorund"
+author: "rashmi"
+date: "August 9, 2016"
+output: html_document
+---
+
+Fetal Heart Rate (FHR) Monitoring is the process of checking the condition of the fetus during labor and delivery by monitoring fetal heart rate with special equipment. Fetal heart rate monitoring may help detect changes in the normal heart rate pattern during labor. If certain changes are detected, steps can be taken to help treat the underlying problem. Fetal heart rate monitoring may also help prevent treatments that are not needed. A normal fetal heart rate can reassure both mother and health care provider that it is safe to continue labor if no other problems are present. Uterine Contractions (UC) generally signal that labor is starting. The abdomen becomes hard during contractions. The uterus relaxes and the abdomen becomes soft between contractions. Cardiotocography is a simultaneous recording of fetal heart rate (FHR) and uterine contractions (UC).
+  
+￼There are two methods of fetal heart rate monitoring in labor. Auscultation is a method of periodically listening to the fetal heartbeat. Electronic fetal monitoring is a procedure in which instruments are used continuously to record the heartbeat of the fetus and
+Abnormal fetal heart rate patterns do not always mean there is a problem. Other tests may be done to get a better idea of what is going on with the baby. 
+
+If there is an abnormal fetal heart rate pattern, the health care provider will first try to find the cause. Steps can be taken to help the baby get more oxygen, such as having the mother change position. If these procedures do not work, or if further test results suggest the baby has a problem, the health care provider may decide to deliver the baby right away. In this case, the delivery of the baby is more likely to be by cesarean birth or with forceps or vacuum extraction.

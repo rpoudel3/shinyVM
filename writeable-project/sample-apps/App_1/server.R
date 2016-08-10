@@ -1,17 +1,61 @@
 library(shiny)
 library(nnet)
 library(psych)
+library(randomForest)
+library(ggplot2)
+
 palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
           "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
-  dmeths = c("euclidean", "manhattan"
-            )
-  cmeths = c("ward.D", "ward.D2",
-             "single", "complete", "average", "mcquitty",
-             "median", "centroid")
+  output$contents <- renderTable({
+    # input$file1 will be NULL initially. After the user selects
+    # and uploads a file, it will be a data frame with 'name',
+    # 'size', 'type', and 'datapath' columns. The 'datapath'
+    # column will contain the local filenames where the data can
+    # be found.
+    
+    inFile <- input$file
+    
+    if (is.null(inFile))
+      return(NULL)
+    
+    read.table(inFile$datapath, header = input$header,
+             sep = input$sep, quote = input$quote,stringsAsFactors = input$stringAsFactors)
+  })
+  data<-reactive({
+    
+    file1<-input$file
+    if(is.null(file1)){return()}
+    read.table(file=file1$datapath,sep=input$sep, header=input$header,
+               stringAsFactors=input$stringAsFactors)
+  })
+  
+  output$filedf<-renderTable({
+    if(is.null(data())){ return ()}
+    input$file
+  })
+  
+  output$sum<-renderTable({
+    
+    if(is.null(data())){return()}
+    summary(data())
+  })
+  output$table<-renderTable({
+    
+    if(is.null(data())){return()}
+    data()
+  })
+  output$tb<-renderUI({
+    
+    #if(is.null(data()))
+      #h5("Powered by",tags$img(src="welcome.png",heigth=200,width=200))
+    #else
+      tabsetPanel(tabPanel("About file",tableOutput("filedf")),tabPanel("Data",tableOutput("table")),
+                  tabPanel("Data Summary",verbatimTextOutput("sum")))
 
+  })
   selectedData <- reactive({
     fetal_data[, c(input$xcol, input$ycol)]
   })
@@ -35,7 +79,7 @@ shinyServer(function(input, output,session) {
   })
   
   output$corplot <- renderPlot({
-      corrplot(cor(fetal_data[,1:22]))
+      corrplot(cor(fetal_data[,1:21]))
     
   })
   
@@ -66,8 +110,7 @@ shinyServer(function(input, output,session) {
     fetal_data[sample(nrow(fetal_data), size = input$obs),]
   })
   
-  output$mytable1= renderDataTable({
-    library(ggplot2)
+  output$mytable1<-renderDataTable({
     fetal_data[, input$show_vars, drop = FALSE]
   })
   output$mytable2 = renderDataTable({
@@ -116,9 +159,9 @@ shinyServer(function(input, output,session) {
     if(algorithmInput()=="Logistic Regression") {
       
       # print classification parameters
-      #print("Algorithm selected: rpart")
-      #print(paste("Training set: ", input$slidertrainsplit*100, "%", sep = ""))
-      #print(paste("Testing set: ", (1-input$slidertrainsplit)*100, "%", sep = ""))
+      print("Algorithm selected: rpart")
+      print(paste("Training set: ", input$slidertrainsplit*100, "%", sep = ""))
+      print(paste("Testing set: ", (1-input$slidertrainsplit)*100, "%", sep = ""))
       
       logisticPseudoR2s <- function(LogModel) {
         dev <- LogModel$deviance 
@@ -143,24 +186,24 @@ shinyServer(function(input, output,session) {
       # Can predict with the PCs, sometimes get a better result or 
       # understanding of the data
       #NB: component scores are standard scores (mean=0, sd = 1) of the standardized input
-      rotation4 <- data.frame(fa4_all_vm$score, class=fetal_data[,"NSP"])
-      logisticMod <- multinom(class ~  PC1 + PC2 + PC3 + PC4, data = rotation4)
-      summary(logisticMod) #AIC: 782.51, Nagelkerke R^2 0.345 
+      #rotation4 <- data.frame(fa4_all_vm$score, class=fetal_data[,"NSP"])
+      #logisticMod <- multinom(class ~  PC1 + PC2 + PC3 + PC4, data = rotation4)
+      #summary(logisticMod) #AIC: 782.51, Nagelkerke R^2 0.345 
       #logisticPseudoR2s(logisticMod)
       
       #library(rpart)
       #set.seed(62433)
-      #model <-multinom(NSP ~ . , data= fetal_data, reflevel="1")
+      model <-multinom(NSP ~ . , data= fetal_data, reflevel="1")
       
       # test rpart model
-      #pred <- predict(model, testing, type  = "class")
+      pred <- predict(model, testing, type  = "class")
       
-      #xtab<-table(predicted = pred, reference = testing$NSP)
+      xtab<-table(predicted = pred, reference = testing$NSP)
       
       # print model
-      #summary(model)
+      summary(model)
       
-      #confusionMatrix(xtab)
+      confusionMatrix(xtab)
       
     } else if(algorithmInput()=="randomForest") {
       
@@ -170,9 +213,13 @@ shinyServer(function(input, output,session) {
       print(paste("Testing set: ", (1-input$slidertrainsplit)*100, "%", sep = ""))
       
       # build randomForest model
-      library(randomForest)
+     
       set.seed(62433)
-      model <- randomForest(NSP ~ . , data=fetal_data)
+      model <- randomForest(NSP ~ . , data=fetal_data, importance=TRUE)
+      output$plot3<-renderPlot({
+      print (importance(model))
+        
+      })
       
       # test randomForest model
       pred <- predict(model, testing, type  = "class")
@@ -198,7 +245,7 @@ shinyServer(function(input, output,session) {
       print(paste("Testing set: ", (1-input$slidertrainsplit)*100, "%", sep = ""))
       
       # build lda model
-      library(MASS)
+      #library(MASS)
       set.seed(62433)
       model <- lda(NSP~ . , data= fetal_data)
       

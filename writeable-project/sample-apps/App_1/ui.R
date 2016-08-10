@@ -1,5 +1,35 @@
 library(corrplot)
 shinyUI(navbarPage("",theme = shinytheme("united"),
+                   tabPanel("Uploading Files",
+                            sidebarLayout(
+                              sidebarPanel(
+                                fileInput('file1', 'Choose file to upload',
+                                          accept = c(
+                                            'text/csv',
+                                            'text/comma-separated-values',
+                                            'text/tab-separated-values',
+                                            'text/plain',
+                                            '.csv',
+                                            '.tsv')),
+                                      
+                                helpText("Default max.file size if 5MB"),
+                                tags$hr(),
+                                h5(helpText("Select the read.table parameters below")),
+                                checkboxInput(inputId='header', label='Header', value=TRUE),
+                                checkboxInput(inputId='stringAsFactors','stringAsFactors', FALSE),
+                                br(),
+                                radioButtons(inputId='sep', label="Separator",choices=
+                                             c(Comma=',',
+                                               Semicolon=';',
+                                               Tab='\t'), selected=',')
+                                             
+                                
+                              ),
+                              mainPanel(
+                                uiOutput("tb")
+                            )
+                            )),
+                   
                    tabPanel("Data Description",
                             headerPanel('Data Exploration'),
                             sidebarPanel(
@@ -15,7 +45,9 @@ shinyUI(navbarPage("",theme = shinytheme("united"),
                                 tabPanel('Data Table',
                                          dataTableOutput("mytable1")),
                                 tabPanel('Feature Description',
-                                         dataTableOutput("mytable2"))
+                                         dataTableOutput("mytable2")),
+                                tabPanel('Fetal Heart Background',
+                                         includeMarkdown("background.rmd"))
                               )
                             )
                             
@@ -26,7 +58,6 @@ shinyUI(navbarPage("",theme = shinytheme("united"),
                               includeMarkdown("correlation.rmd")
                             ),
                             mainPanel(
-                            
                             plotOutput("corplot", height=600)
                             )
                    ),
@@ -74,18 +105,18 @@ shinyUI(navbarPage("",theme = shinytheme("united"),
                    
                    tabPanel("Classification",
                               headerPanel("Fetal Heart Classification"),
-                              tabsetPanel(
-                              tabPanel('Randomforest',
                               sidebarPanel(
                                 
-                                numericInput("obs", "Number of observations to view:", 5), 
+                                
                                 
                                 sliderInput("slidertrainsplit",
                                             "Proportion of Training observations",
                                             min = 0, max = 1, value = 0.7, step = 0.1),
                                 
                                 selectInput("algorithm", "Choose a Classification algorithm:", 
-                                            choices = c("randomForest"))
+                                            choices = c("randomForest", "Logistic Regression")),
+                                
+                                includeMarkdown("accuracy_gini.rmd")
                               ),
                               
                                 mainPanel(
@@ -93,13 +124,16 @@ shinyUI(navbarPage("",theme = shinytheme("united"),
                                   verbatimTextOutput("results")
                                   
                                 )
-                              ),
-                              tabPanel("Logistic Regression",
-                                      verbatimTextOutput("results_regression")
                               )
+                              #tabPanel("Logistic Regression",
+                               #       verbatimTextOutput("results_regression")
+                              #)
                               
                               # Show the some example of observations, a summary of the dataset 
                               # and the results on the model
                               
-                   ))
+                   
 ))
+                   
+
+                            
