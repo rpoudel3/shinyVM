@@ -159,29 +159,17 @@ shinyServer(function(input, output,session) {
     if(algorithmInput()=="Logistic Regression") {
       
       # print classification parameters
-      print("Algorithm selected: rpart")
+      print("Algorithm selected: Logistic Regression")
       print(paste("Training set: ", input$slidertrainsplit*100, "%", sep = ""))
       print(paste("Testing set: ", (1-input$slidertrainsplit)*100, "%", sep = ""))
       
-      logisticPseudoR2s <- function(LogModel) {
-        dev <- LogModel$deviance 
-        nullDev <- LogModel$null.deviance 
-        modelN <-  length(LogModel$fitted.values)
-        R.l <-  1 -  dev / nullDev
-        R.cs <- 1- exp ( -(nullDev - dev) / modelN)
-        R.n <- R.cs / ( 1 - ( exp (-(nullDev / modelN))))
-        cat("Pseudo R^2 for logistic regression\n")
-        cat("Hosmer and Lemeshow R^2  ", round(R.l, 3), "\n")
-        cat("Cox and Snell R^2        ", round(R.cs, 3), "\n")
-        cat("Nagelkerke R^2           ", round(R.n, 3),    "\n")
-      }
+     
       
       # Here we use fewer PCs so we can see some structure in the data:
       # Variables that are correlated share a PC
       d2_attrib<-fetal_data[,1:22]
       
-      fa4_all_vm <- principal(d2_attrib, nfactors =4, rotate = "varimax")
-      fa4_all_vm  #
+      
       
       # Can predict with the PCs, sometimes get a better result or 
       # understanding of the data
@@ -193,8 +181,9 @@ shinyServer(function(input, output,session) {
       
       #library(rpart)
       #set.seed(62433)
-      model <-multinom(NSP ~ . , data= fetal_data, reflevel="1")
-      
+      model <-multinom(NSP ~ UC+AC+ASTV+MSTV+MLTV+ALTV+DP+Mode+Mean+Median , data= fetal_data)
+      #model<-multinom(NSP~LB+AC+FM+UC+ASTV+MSTV+ALTV+MLTV+DL+DS+DP+Width+Min+Max+Nmax
+                      #+Nzeros+Mode+Mean+Median+Variance+Tendency,data=fetal_data)
       # test rpart model
       pred <- predict(model, testing, type  = "class")
       
@@ -216,10 +205,10 @@ shinyServer(function(input, output,session) {
      
       set.seed(62433)
       model <- randomForest(NSP ~ . , data=fetal_data, importance=TRUE)
-      output$plot3<-renderPlot({
-      print (importance(model))
+      
+      print (importance(model, type=1))
         
-      })
+   
       
       # test randomForest model
       pred <- predict(model, testing, type  = "class")

@@ -6,6 +6,18 @@ output: html_document
 ---
 
 
-The mean decrease accuracy is how much the model fit decreases when you drop a variable.  The greater the drop the more significant the variable.The mean decrease is more significant for variable selection.You could use a GINI index to describe the overall explanatory power of the variables. Are they all equally as important, or does one have much greater explanatory value.So mean decrease accuracy would be more important for variable selection.GINI would give you information at a glance about the explanatory relationship between the variables selected.
+The mean decrease accuracy is how much the model fit decreases when you drop a variable.  The greater the drop the more significant the variable.The mean decrease is more significant for variable selection.
 
+10 significant variables:
+
+UC,
+AC,
+ASTV,
+MSTV,
+MLTV,
+ALTV,
+DP,
+Mode,
+Mean, 
+Median
 

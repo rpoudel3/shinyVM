@@ -1,36 +1,8 @@
 library(corrplot)
 shinyUI(navbarPage("",theme = shinytheme("united"),
-                   tabPanel("Uploading Files",
-                            sidebarLayout(
-                              sidebarPanel(
-                                fileInput('file1', 'Choose file to upload',
-                                          accept = c(
-                                            'text/csv',
-                                            'text/comma-separated-values',
-                                            'text/tab-separated-values',
-                                            'text/plain',
-                                            '.csv',
-                                            '.tsv')),
-                                      
-                                helpText("Default max.file size if 5MB"),
-                                tags$hr(),
-                                h5(helpText("Select the read.table parameters below")),
-                                checkboxInput(inputId='header', label='Header', value=TRUE),
-                                checkboxInput(inputId='stringAsFactors','stringAsFactors', FALSE),
-                                br(),
-                                radioButtons(inputId='sep', label="Separator",choices=
-                                             c(Comma=',',
-                                               Semicolon=';',
-                                               Tab='\t'), selected=',')
-                                             
-                                
-                              ),
-                              mainPanel(
-                                uiOutput("tb")
-                            )
-                            )),
+                  
                    
-                   tabPanel("Data Description",
+                  tabPanel("Data Description",
                             headerPanel('Data Exploration'),
                             sidebarPanel(
                               checkboxGroupInput('show_vars', 
@@ -46,6 +18,8 @@ shinyUI(navbarPage("",theme = shinytheme("united"),
                                          dataTableOutput("mytable1")),
                                 tabPanel('Feature Description',
                                          dataTableOutput("mytable2")),
+                                tabPanel("Statistical Measures",
+                                         verbatimTextOutput("summary")),
                                 tabPanel('Fetal Heart Background',
                                          includeMarkdown("background.rmd"))
                               )
@@ -62,9 +36,7 @@ shinyUI(navbarPage("",theme = shinytheme("united"),
                             )
                    ),
     
-                   tabPanel("Statistical Measures of Variables",
-                                     verbatimTextOutput("summary")
-                   ),
+                  
                    
                    tabPanel("Plots",
                             headerPanel("Variable Selection"),
